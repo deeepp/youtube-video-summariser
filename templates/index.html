@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Summarizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            padding: 20px;
+            max-width: 700px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #summary-text {
+            white-space: pre-wrap;
+            background-color: #fff;
+            border-left: 5px solid #3498db;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        audio {
+            margin-top: 15px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎧 YouTube Summarizer + Audio</h1>
+    <input type="text" id="videoUrl" placeholder="Paste YouTube video URL..." />
+    <button onclick="summarize()">Summarize</button>
+
+    <h2>📝 Summary</h2>
+    <div id="summary-text"></div>
+
+    <h2>🔊 Audio</h2>
+    <audio id="audio-player" controls style="display: none;">
+        <source id="audio-source" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        function summarize() {
+            const videoUrl = document.getElementById("videoUrl").value;
+            if (!videoUrl) {
+                alert("Please enter a YouTube video URL.");
+                return;
+            }
+
+            document.getElementById("summary-text").textContent = "⏳ Processing...";
+
+            fetch('/summarize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ url: videoUrl })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("summary-text").textContent = "⚠️ Error: " + data.error;
+                    return;
+                }
+
+                document.getElementById("summary-text").textContent = data.summary;
+
+                const audioPlayer = document.getElementById("audio-player");
+                const audioSource = document.getElementById("audio-source");
+
+                if (data.audio_url) {
+                    audioSource.src = data.audio_url;
+                    audioPlayer.style.display = "block";
+                    audioPlayer.load();
+                }
+            })
+            .catch(error => {
+                document.getElementById("summary-text").textContent = "❌ Failed to process video.";
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
