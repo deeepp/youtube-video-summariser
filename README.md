@@ -18,3 +18,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 4) the app runs in http://127.0.0.1:5000/
 
 sample output:  https://youtu.be/v0MELJPhqkw
+
+current scope:
+1) only english voiced videos 
