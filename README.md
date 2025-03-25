@@ -16,3 +16,5 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 2) pip install requirements.txt
 3) run python app.py
 4) the app runs in http://127.0.0.1:5000/
+
+sample output:  https://youtu.be/v0MELJPhqkw
